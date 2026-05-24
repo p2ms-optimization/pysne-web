@@ -1,0 +1,105 @@
+site_name: PySNE
+site_description: Finding all solutions of system of nonlinear equations
+site_url: https://p2ms-optimization.github.io/pysne-web/
+repo_url: https://github.com/p2ms-optimization/pysne-web
+repo_name: p2ms-optimization/pysne-web
+edit_uri: ""
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Overview: getting-started/index.md
+      - Installation: getting-started/installation.md
+      - Quick Start: getting-started/quick-start.md
+  - Documentation:
+      - Overview: documentation/index.md
+      - API Reference: documentation/api-reference.md
+      - User Guide: documentation/user-guide.md
+      - Algorithms: documentation/algorithms.md
+  - Examples:
+      - Example Gallery: examples/index.md
+      - Interactive Graph Demo: examples/interactive-graph.md
+      - Image & Video Demos: examples/image-video-demo.md
+  - Case Studies:
+      - Overview: case-studies/index.md
+      - Nonlinear Systems: case-studies/nonlinear-systems.md
+      - Application Examples: case-studies/application-examples.md
+  - Research:
+      - Overview: research/index.md
+      - Publications: research/publications.md
+      - References: research/references.md
+  - Project:
+      - GitHub Repository: github.md
+      - Deployment Guide: deployment.md
+      - Contact: contact.md
+
+theme:
+  name: material
+  logo: assets/images/pysne-logo.svg
+  favicon: assets/images/pysne-logo.svg
+  palette:
+    - scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - toc.follow
+  font:
+    text: Inter
+    code: JetBrains Mono
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+extra_javascript:
+  - assets/javascripts/interactive-demo.js
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/p2ms-optimization/pysne
+    - icon: fontawesome/brands/youtube
+      link: https://www.youtube.com/
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/
+  project_repo: https://github.com/p2ms-optimization/pysne
+  website_repo: https://github.com/p2ms-optimization/pysne-web
+  generator: false
