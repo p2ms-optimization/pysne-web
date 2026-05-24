@@ -1,8 +1,8 @@
 site_name: PySNE
 site_description: Finding all solutions of system of nonlinear equations
 site_url: https://p2ms-optimization.github.io/pysne-web/
-repo_url: https://github.com/p2ms-optimization/pysne-web
-repo_name: p2ms-optimization/pysne-web
+repo_url: https://github.com/p2ms-optimization/pysne
+repo_name: p2ms-optimization/pysne
 edit_uri: ""
 
 nav:
