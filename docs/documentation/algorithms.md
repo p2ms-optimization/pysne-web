@@ -2,7 +2,7 @@
 
 PySNE's solver combines two techniques from the spiral-optimization
 literature: **Spiral Optimization (SPO)**, proposed by
-Tamura & Yasuda (2011), for local search, and a **clustering extension**
+Tamura & Yasuda (2011), for local search, and a **clustering technique**
 proposed by Sidarto & Kania (2015) that lets a single run locate *all*
 roots or optima in a bounded domain, rather than just one.
 
@@ -77,7 +77,7 @@ residual has a fixed target (a fitness of 1.0 means an exact root),
 whereas an arbitrary objective function's "good enough" is inherently
 relative to what's achievable.
 
-## Phase 2: SPO refinement per cluster
+## Phase 2: Spiral Optimization (SPO) per cluster
 
 Implemented in `run_spo_on_clusters`, calling `spiral_dynamics_optimization`
 once per cluster found in Phase 1.
