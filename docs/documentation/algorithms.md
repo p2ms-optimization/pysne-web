@@ -53,17 +53,17 @@ Implemented in `perform_iterative_clustering`.
         several iterations rather than sampling it once.
 
 **Deciding what a point does to the cluster list.** For a candidate point
-`y` and its nearest existing cluster center `x_C`, PySNE samples a handful
+\(y\) and its nearest existing cluster center \(x_C\), PySNE samples a handful
 of points in between (`num_check_points` of them) and compares fitness at
-`y`, at `x_C`, and at the in-between points:
+\(y\), at \(x_C\), and at the in-between points:
 
-- If the in-between points dip *lower* than both `y` and `x_C`, there's a
-  valley separating them — they belong to different solutions, so `y`
+- If the in-between points dip *lower* than both \(y\) and \(x_C\), there's a
+  valley separating them — they belong to different solutions, so \(y\)
   starts a new cluster.
-- If an in-between point is *higher* than both `y` and `x_C`, a better
-  candidate lies between them — a new cluster forms at `y`, and the search
+- If an in-between point is *higher* than both \(y\) and \(x_C\), a better
+  candidate lies between them — a new cluster forms at \(y\), and the search
   recurses toward that better in-between point.
-- If neither of those holds and `y` is simply better than `x_C`, `y`
+- If neither of those holds and \(y\) is simply better than \(x_C\), \(y\)
   replaces the cluster's center.
 - Otherwise, the cluster is left alone (only its radius is refreshed to
   the current point's distance).
@@ -110,9 +110,9 @@ problem type:
 
 | Problem type | Acceptance test | Deduplication |
 |---|---|---|
-| **SNE** (`SNEProblem`) | In-domain and `1.0 - fitness < epsilon` (fitness close to the maximum of 1.0 = near-zero residual). | Points within `delta` of each other are merged, keeping the higher-fitness one. |
+| **SNE** (`SNEProblem`) | In-domain and \(1.0 - \text{fitness} < \epsilon\) (fitness close to the maximum of 1.0 = near-zero residual). | Points within `delta` of each other are merged, keeping the higher-fitness one. |
 | **Multimodal** (`MultimodalProblem`) | In-domain, optionally above a `gamma`-relative quality floor, **and** a local peak check — a candidate is discarded if nudging it slightly in any dimension increases its fitness (i.e. it isn't actually a local optimum). | Same `delta`-based merge. |
-| **Diophantine** (`DiophantineProblem`) | Candidates are rounded to integers, checked against the integer domain, and accepted if `1.0 - fitness <= epsilon`. | Deduplicated as exact integer tuples, then optionally sorted before comparison so permutation-symmetric solutions (e.g. swapped variables) count as duplicates. |
+| **Diophantine** (`DiophantineProblem`) | Candidates are rounded to integers, checked against the integer domain, and accepted if \(1.0 - \text{fitness} \leq \epsilon\). | Deduplicated as exact integer tuples, then optionally sorted before comparison so permutation-symmetric solutions (e.g. swapped variables) count as duplicates. |
 
 This is why PySNE structures problems around subclasses rather than a
 single generic solver: each problem type needs a different notion of "is
