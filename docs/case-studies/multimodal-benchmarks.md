@@ -6,9 +6,9 @@ the multimodal optimisation task. These benchmarks live in
 multi-solution optimisers (Rastrigin, Shubert, Six-Hump Camel Back, and more).
 
 !!! abstract "How this differs from the SNE benchmarks"
-    In the [SNE suite](nonlinear-systems.md) the goal is to solve `F(x) = 0`, and problems carry
-    an `expected_roots` target. Here the goal is to find **all optima** of `g(x)`, so each
-    problem instead declares an `optima_type`:
+    In the [SNE suite](nonlinear-systems.md) the goal is to solve \(F(\mathbf{x}) = 0\), and
+    problems carry an `expected_roots` target. Here the goal is to find **all optima** of
+    \(g(\mathbf{x})\), so each problem instead declares an `optima_type`:
 
     - `"max"` — search for maxima only
     - `"min"` — search for minima only
@@ -61,15 +61,15 @@ The registry exposes both numeric IDs and convenient string keys.
 
 | Key | Function | Vars | Search space | optima_type |
 |-----|----------|:----:|--------------|:-----------:|
-| `1` / `two_n_minima` | Two-N-Minima | 2 | `[-4, 4]²` | both |
-| `2` | Six-Hump Camel Back | 2 | `[-1.9, 1.9] × [-1.1, 1.1]` | both |
-| `3` / `rastrigin` | Rastrigin | 2 | `[-1, 1]²` | both |
-| `4` | Rastrigin | 3 | `[-1, 1]³` | both |
-| `5` | Vincent | 2 | `[0.25, 10]²` | max |
-| `6` | Shubert | 2 | `[-10, 10]²` | max |
-| `7` | Shubert | 3 | `[-10, 10]³` | max |
-| `schwefel` | Schwefel 2.22 | 3 | `[-4, 6]³` | both |
-| `griewank` | Griewank | 2 | `[-600, 600]²` | both |
+| `1` / `two_n_minima` | Two-N-Minima | 2 | \([-4, 4]^2\) | both |
+| `2` | Six-Hump Camel Back | 2 | \([-1.9, 1.9] \times [-1.1, 1.1]\) | both |
+| `3` / `rastrigin` | Rastrigin | 2 | \([-1, 1]^2\) | both |
+| `4` | Rastrigin | 3 | \([-1, 1]^3\) | both |
+| `5` | Vincent | 2 | \([0.25, 10]^2\) | max |
+| `6` | Shubert | 2 | \([-10, 10]^2\) | max |
+| `7` | Shubert | 3 | \([-10, 10]^3\) | max |
+| `schwefel` | Schwefel 2.22 | 3 | \([-4, 6]^3\) | both |
+| `griewank` | Griewank | 2 | \([-600, 600]^2\) | both |
 | `iwm` | IWM project (applied) | 25 | task-specific bounds | both |
 
 ---
@@ -79,11 +79,11 @@ The registry exposes both numeric IDs and convenient string keys.
 A separable quartic whose one-dimensional profile has two minima per axis, giving a small,
 well-understood set of optima — a good first sanity check.
 
-```text
-g(x) = Σᵢ ½·(xᵢ⁴ − 16·xᵢ² + 5·xᵢ)
-```
+\[
+g(\mathbf{x}) = \sum_{i} \frac{1}{2}\left(x_i^4 - 16 x_i^2 + 5 x_i\right)
+\]
 
-- **Search space:** `x₁, x₂ ∈ [-4, 4]`
+- **Search space:** \(x_1, x_2 \in [-4, 4]\)
 - **optima_type:** both
 
 ## Six-Hump Camel Back
@@ -91,11 +91,11 @@ g(x) = Σᵢ ½·(xᵢ⁴ − 16·xᵢ² + 5·xᵢ)
 A canonical low-dimensional multimodal test function with six local optima, two of which are
 global minima.
 
-```text
-g(x) = (4 − 2.1·x₁² + x₁⁴/3)·x₁² + x₁·x₂ + (−4 + 4·x₂²)·x₂²
-```
+\[
+g(\mathbf{x}) = \left(4 - 2.1 x_1^2 + \frac{x_1^4}{3}\right) x_1^2 + x_1 x_2 + \left(-4 + 4 x_2^2\right) x_2^2
+\]
 
-- **Search space:** `x₁ ∈ [-1.9, 1.9]`, `x₂ ∈ [-1.1, 1.1]`
+- **Search space:** \(x_1 \in [-1.9, 1.9]\), \(x_2 \in [-1.1, 1.1]\)
 - **optima_type:** both
 
 ## Rastrigin (2D / 3D)
@@ -103,11 +103,11 @@ g(x) = (4 − 2.1·x₁² + x₁⁴/3)·x₁² + x₁·x₂ + (−4 + 4·x₂²)
 A highly multimodal function with a regular lattice of local minima — the standard stress test
 for niching. Available in 2D (`3`) and 3D (`4`) variants over a compact box.
 
-```text
-g(x) = Σᵢ (xᵢ² − 10·cos(2π·xᵢ) + 10)
-```
+\[
+g(\mathbf{x}) = \sum_{i} \left(x_i^2 - 10 \cos(2\pi x_i) + 10\right)
+\]
 
-- **Search space:** `xᵢ ∈ [-1, 1]`
+- **Search space:** \(x_i \in [-1, 1]\)
 - **optima_type:** both
 
 ## Vincent
@@ -115,11 +115,11 @@ g(x) = Σᵢ (xᵢ² − 10·cos(2π·xᵢ) + 10)
 An oscillatory function on a log-scaled domain, with maxima whose spacing shrinks toward the
 lower bound.
 
-```text
-g(x) = ½·(sin(10·ln x₁) + sin(10·ln x₂))
-```
+\[
+g(\mathbf{x}) = \frac{1}{2}\left(\sin(10 \ln x_1) + \sin(10 \ln x_2)\right)
+\]
 
-- **Search space:** `x₁, x₂ ∈ [0.25, 10]`
+- **Search space:** \(x_1, x_2 \in [0.25, 10]\)
 - **optima_type:** max
 
 ## Shubert (2D / 3D)
@@ -127,11 +127,11 @@ g(x) = ½·(sin(10·ln x₁) + sin(10·ln x₂))
 A separable product of cosine sums that produces a large number of global maxima — one of the
 hardest counting tasks in the suite. Provided in 2D (`6`) and 3D (`7`).
 
-```text
-g(x) = − Πⱼ Σ_{i=1}^{5} i·cos((i + 1)·xⱼ + i)
-```
+\[
+g(\mathbf{x}) = -\prod_{j} \sum_{i=1}^{5} i \cos\left((i + 1) x_j + i\right)
+\]
 
-- **Search space:** `xⱼ ∈ [-10, 10]`
+- **Search space:** \(x_j \in [-10, 10]\)
 - **optima_type:** max
 
 ## Schwefel 2.22
@@ -139,11 +139,11 @@ g(x) = − Πⱼ Σ_{i=1}^{5} i·cos((i + 1)·xⱼ + i)
 A convex-but-nonsmooth function combining an absolute-value sum with a product term; its single
 minimum at the origin makes it a useful precision check in higher dimensions.
 
-```text
-g(x) = Σᵢ |xᵢ| + Πᵢ |xᵢ|
-```
+\[
+g(\mathbf{x}) = \sum_{i} |x_i| + \prod_{i} |x_i|
+\]
 
-- **Search space:** `xᵢ ∈ [-4, 6]` (3D)
+- **Search space:** \(x_i \in [-4, 6]\) (3D)
 - **optima_type:** both
 
 ## Griewank
@@ -151,11 +151,11 @@ g(x) = Σᵢ |xᵢ| + Πᵢ |xᵢ|
 A function with many regularly spaced local minima over a very wide domain, testing robustness
 to scale.
 
-```text
-g(x) = Σᵢ xᵢ²/4000 − Πᵢ cos(xᵢ / √i) + 1
-```
+\[
+g(\mathbf{x}) = \sum_{i} \frac{x_i^2}{4000} - \prod_{i} \cos\left(\frac{x_i}{\sqrt{i}}\right) + 1
+\]
 
-- **Search space:** `x₁, x₂ ∈ [-600, 600]`
+- **Search space:** \(x_1, x_2 \in [-600, 600]\)
 - **optima_type:** both
 
 ## IWM (applied problem)
@@ -168,10 +168,10 @@ problems. Retrieve it with the `"iwm"` key.
 
 ## Method
 
-Multimodal problems reuse PySNE's **Clustering → SDOA → Selection** pipeline, with the selection
+Multimodal problems reuse PySNE's **Clustering → SPO → Selection** pipeline, with the selection
 stage adapted for optima rather than roots: candidates are filtered against a global threshold
-derived from the best objective value found (`F_star`) and the `gamma` parameter, then merged by
-proximity (`delta`). See [Algorithms](../documentation/algorithms.md) for details.
+derived from the best objective value found (\(F^*\)) and the `gamma` parameter, then merged by
+proximity (\(\delta\)). See [Algorithms](../documentation/algorithms.md) for details.
 
 ## See also
 

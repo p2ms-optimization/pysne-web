@@ -7,11 +7,11 @@ literature, defined with a known search space and a target number of solutions
 roots — not just one.
 
 Every problem here subclasses `SNEProblem`, so the objective is driven by an explicit set of
-equations `F(x) = 0` and solutions are filtered by residual tolerance (`1 - f(x) < epsilon`)
-before duplicate roots are merged by clustering.
+equations \(F(\mathbf{x}) = 0\) and solutions are filtered by residual tolerance
+(\(1 - f(\mathbf{x}) < \epsilon\)) before duplicate roots are merged by clustering.
 
 !!! info "The three-phase pipeline"
-    All SNE benchmarks are solved by the same pipeline — **Iterative Clustering → SDOA →
+    All SNE benchmarks are solved by the same pipeline — **Iterative Clustering → SPO →
     Selection**. See [Algorithms](../documentation/algorithms.md) for the full method.
 
 ## Running the suite
@@ -58,21 +58,22 @@ for pid, factory in get_problem_set().items():
 ```
 
 !!! note "Reproducing the results"
-    The solver prints each root together with its residual `1 - f(x)` when `verbose=True`.
-    Because these are stochastic global searches, the exact coordinates are produced at
-    runtime; the benchmark target is the **count** in the `Expected roots` column below.
+    The solver prints each root together with its residual \(1 - f(\mathbf{x})\) when
+    `verbose=True`. Because these are stochastic global searches, the exact coordinates are
+    produced at runtime; the benchmark target is the **count** in the `Expected roots` column
+    below.
 
 ## Benchmark roster
 
 | ID | System | Vars | Search space | Expected roots |
 |----|--------|:----:|--------------|:--------------:|
-| 1 | Exponential–trigonometric system | 2 | `[-10, 10]²` | 6 |
-| 2 | Sine–exponential coupled system | 2 | `[-1, 3] × [-17, 4]` | 12 |
-| 3 | Coupled exponential system | 6 | `[-5, 5]⁶` | 2 |
-| 4 | Structural (thin-walled beam) system | 3 | `[-40, 40]³` | 6 |
-| 5 | Symmetric linear + product constraint | 5 | `[-10, 10]⁵` | 3 |
-| 6 | Combustion / unit-circle system | 8 | `[-1, 1]⁸` | 16 |
-| 7 | Truncated Weierstrass equation | 1 | `[0, 5.05]` | 9 |
+| 1 | Exponential–trigonometric system | 2 | \([-10, 10]^2\) | 6 |
+| 2 | Sine–exponential coupled system | 2 | \([-1, 3] \times [-17, 4]\) | 12 |
+| 3 | Coupled exponential system | 6 | \([-5, 5]^6\) | 2 |
+| 4 | Structural (thin-walled beam) system | 3 | \([-40, 40]^3\) | 6 |
+| 5 | Symmetric linear + product constraint | 5 | \([-10, 10]^5\) | 3 |
+| 6 | Combustion / unit-circle system | 8 | \([-1, 1]^8\) | 16 |
+| 7 | Truncated Weierstrass equation | 1 | \([0, 5.05]\) | 9 |
 
 ---
 
@@ -81,12 +82,14 @@ for pid, factory in get_problem_set().items():
 A classic two-variable system that mixes exponential and trigonometric terms, producing several
 well-separated roots across a wide domain.
 
-```text
-f₁(x) = exp(x₁ − x₂) − sin(x₁ + x₂)
-f₂(x) = x₁² · x₂² − cos(x₁ + x₂)
-```
+\[
+\begin{aligned}
+f_1(\mathbf{x}) &= \exp(x_1 - x_2) - \sin(x_1 + x_2) \\
+f_2(\mathbf{x}) &= x_1^2 \cdot x_2^2 - \cos(x_1 + x_2)
+\end{aligned}
+\]
 
-- **Search space:** `x₁, x₂ ∈ [-10, 10]`
+- **Search space:** \(x_1, x_2 \in [-10, 10]\)
 - **Expected roots:** 6
 
 ## Problem 2 — Sine–exponential coupled system
@@ -94,12 +97,14 @@ f₂(x) = x₁² · x₂² − cos(x₁ + x₂)
 A stiff coupled system over an asymmetric domain; the exponential term makes the residual
 landscape steep, so it is tuned with a larger cluster budget.
 
-```text
-f₁(x) = ½·sin(x₁·x₂) − x₂ / (4π) − x₁ / 2
-f₂(x) = (1 − 1/(4π))·(exp(2x₁) − e) + e·x₂ / π − 2e·x₁
-```
+\[
+\begin{aligned}
+f_1(\mathbf{x}) &= \frac{1}{2}\sin(x_1 x_2) - \frac{x_2}{4\pi} - \frac{x_1}{2} \\
+f_2(\mathbf{x}) &= \left(1 - \frac{1}{4\pi}\right)\left(\exp(2x_1) - e\right) + \frac{e \, x_2}{\pi} - 2 e x_1
+\end{aligned}
+\]
 
-- **Search space:** `x₁ ∈ [-1, 3]`, `x₂ ∈ [-17, 4]`
+- **Search space:** \(x_1 \in [-1, 3]\), \(x_2 \in [-17, 4]\)
 - **Expected roots:** 12
 
 ## Problem 3 — Coupled exponential system (6D)
@@ -107,16 +112,18 @@ f₂(x) = (1 − 1/(4π))·(exp(2x₁) − e) + e·x₂ / π − 2e·x₁
 A six-dimensional system where variables are chained through products and exponentials, leaving
 only two valid roots inside the box.
 
-```text
-f₁(x) = x₁ + (x₂²·x₄·x₆)/4 + 0.75
-f₂(x) = x₂ + 0.405·exp(1 + x₁·x₂) − 1.405
-f₃(x) = x₃ − (x₄·x₆)/2 + 1.5
-f₄(x) = x₄ − 0.605·exp(1 − x₃²) − 0.395
-f₅(x) = x₅ − (x₂·x₆)/2 + 1.5
-f₆(x) = x₆ − x₁·x₅
-```
+\[
+\begin{aligned}
+f_1(\mathbf{x}) &= x_1 + \frac{x_2^2 x_4 x_6}{4} + 0.75 \\
+f_2(\mathbf{x}) &= x_2 + 0.405 \exp(1 + x_1 x_2) - 1.405 \\
+f_3(\mathbf{x}) &= x_3 - \frac{x_4 x_6}{2} + 1.5 \\
+f_4(\mathbf{x}) &= x_4 - 0.605 \exp(1 - x_3^2) - 0.395 \\
+f_5(\mathbf{x}) &= x_5 - \frac{x_2 x_6}{2} + 1.5 \\
+f_6(\mathbf{x}) &= x_6 - x_1 x_5
+\end{aligned}
+\]
 
-- **Search space:** `xᵢ ∈ [-5, 5]` for `i = 1..6`
+- **Search space:** \(x_i \in [-5, 5]\) for \(i = 1, \dots, 6\)
 - **Expected roots:** 2
 
 ## Problem 4 — Structural (thin-walled beam) system
@@ -124,13 +131,15 @@ f₆(x) = x₆ − x₁·x₅
 An engineering-flavoured system derived from cross-sectional area, moment-of-inertia, and
 torsion relations of a thin-walled beam.
 
-```text
-f₁(x) = x₁·x₂ − (x₁ − 2x₃)·(x₂ − 2x₃) − 165
-f₂(x) = (x₁·x₂³)/12 − ((x₁ − 2x₃)·(x₂ − 2x₃)³)/12 − 9369
-f₃(x) = [2·(x₂ − x₃)²·(x₁ − x₃)²·x₃] / (x₁ + x₂ − 2x₃) − 6835
-```
+\[
+\begin{aligned}
+f_1(\mathbf{x}) &= x_1 x_2 - (x_1 - 2x_3)(x_2 - 2x_3) - 165 \\
+f_2(\mathbf{x}) &= \frac{x_1 x_2^3}{12} - \frac{(x_1 - 2x_3)(x_2 - 2x_3)^3}{12} - 9369 \\
+f_3(\mathbf{x}) &= \frac{2 (x_2 - x_3)^2 (x_1 - x_3)^2 x_3}{x_1 + x_2 - 2x_3} - 6835
+\end{aligned}
+\]
 
-- **Search space:** `xᵢ ∈ [-40, 40]` for `i = 1..3`
+- **Search space:** \(x_i \in [-40, 40]\) for \(i = 1, 2, 3\)
 - **Expected roots:** 6
 
 ## Problem 5 — Symmetric linear system + product constraint (5D)
@@ -138,15 +147,17 @@ f₃(x) = [2·(x₂ − x₃)²·(x₁ − x₃)²·x₃] / (x₁ + x₂ − 2x�
 Four near-symmetric linear equations coupled to a single nonlinear product constraint. The
 symmetry yields exactly three distinct real solutions.
 
-```text
-f₁(x) = 2x₁ + x₂ + x₃ + x₄ + x₅ − 6
-f₂(x) = x₁ + 2x₂ + x₃ + x₄ + x₅ − 6
-f₃(x) = x₁ + x₂ + 2x₃ + x₄ + x₅ − 6
-f₄(x) = x₁ + x₂ + x₃ + 2x₄ + x₅ − 6
-f₅(x) = x₁·x₂·x₃·x₄·x₅ − 1
-```
+\[
+\begin{aligned}
+f_1(\mathbf{x}) &= 2x_1 + x_2 + x_3 + x_4 + x_5 - 6 \\
+f_2(\mathbf{x}) &= x_1 + 2x_2 + x_3 + x_4 + x_5 - 6 \\
+f_3(\mathbf{x}) &= x_1 + x_2 + 2x_3 + x_4 + x_5 - 6 \\
+f_4(\mathbf{x}) &= x_1 + x_2 + x_3 + 2x_4 + x_5 - 6 \\
+f_5(\mathbf{x}) &= x_1 x_2 x_3 x_4 x_5 - 1
+\end{aligned}
+\]
 
-- **Search space:** `xᵢ ∈ [-10, 10]` for `i = 1..5`
+- **Search space:** \(x_i \in [-10, 10]\) for \(i = 1, \dots, 5\)
 - **Expected roots:** 3
 
 ## Problem 6 — Combustion / unit-circle system (8D)
@@ -154,31 +165,33 @@ f₅(x) = x₁·x₂·x₃·x₄·x₅ − 1
 The most demanding case in the suite: an eight-variable system combining bilinear reaction
 terms with four unit-circle constraints, admitting sixteen roots.
 
-```text
-f₁(x) = 4.731e-3·x₁·x₃ − 0.3578·x₂·x₃ − 0.1238·x₁ + x₇ − 1.637e-3·x₂ − 0.9338·x₄ − 0.3571
-f₂(x) = 0.2238·x₁·x₃ + 0.7623·x₂·x₃ + 0.2638·x₁ − x₇ − 0.07745·x₂ − 0.6734·x₄ − 0.6022
-f₃(x) = x₆·x₈ + 0.3578·x₁ + 4.731e-3·x₂
-f₄(x) = −0.7623·x₁ + 0.2238·x₂ + 0.3461
-f₅(x) = x₁² + x₂² − 1
-f₆(x) = x₃² + x₄² − 1
-f₇(x) = x₅² + x₆² − 1
-f₈(x) = x₇² + x₈² − 1
-```
+\[
+\begin{aligned}
+f_1(\mathbf{x}) &= 4.731\text{e-}3 \cdot x_1 x_3 - 0.3578 \, x_2 x_3 - 0.1238 \, x_1 + x_7 - 1.637\text{e-}3 \, x_2 - 0.9338 \, x_4 - 0.3571 \\
+f_2(\mathbf{x}) &= 0.2238 \, x_1 x_3 + 0.7623 \, x_2 x_3 + 0.2638 \, x_1 - x_7 - 0.07745 \, x_2 - 0.6734 \, x_4 - 0.6022 \\
+f_3(\mathbf{x}) &= x_6 x_8 + 0.3578 \, x_1 + 4.731\text{e-}3 \, x_2 \\
+f_4(\mathbf{x}) &= -0.7623 \, x_1 + 0.2238 \, x_2 + 0.3461 \\
+f_5(\mathbf{x}) &= x_1^2 + x_2^2 - 1 \\
+f_6(\mathbf{x}) &= x_3^2 + x_4^2 - 1 \\
+f_7(\mathbf{x}) &= x_5^2 + x_6^2 - 1 \\
+f_8(\mathbf{x}) &= x_7^2 + x_8^2 - 1
+\end{aligned}
+\]
 
-- **Search space:** `xᵢ ∈ [-1, 1]` for `i = 1..8`
+- **Search space:** \(x_i \in [-1, 1]\) for \(i = 1, \dots, 8\)
 - **Expected roots:** 16
 
 ## Problem 7 — Truncated Weierstrass equation (1D)
 
-A single-variable equation built from a truncated Weierstrass series (`s = 1.1`, `λ = 1.5`,
-`N = 20`). Although one-dimensional, its highly oscillatory nature packs nine roots into a
-short interval.
+A single-variable equation built from a truncated Weierstrass series (\(s = 1.1\), \(\lambda =
+1.5\), \(N = 20\)). Although one-dimensional, its highly oscillatory nature packs nine roots
+into a short interval.
 
-```text
-f(x) = Σ_{k=1}^{20} λ^((s−2)·k) · sin(λ^k · x),   s = 1.1,  λ = 1.5
-```
+\[
+f(x) = \sum_{k=1}^{20} \lambda^{(s-2)k} \cdot \sin\left(\lambda^k x\right), \quad s = 1.1, \ \lambda = 1.5
+\]
 
-- **Search space:** `x ∈ [0, 5.05]`
+- **Search space:** \(x \in [0, 5.05]\)
 - **Expected roots:** 9
 
 ---
@@ -189,9 +202,9 @@ For every problem above, PySNE follows the same procedure:
 
 1. **Define** the equations and the bounded search space via `get_info()`.
 2. **Cluster** the domain into candidate basins using iterative clustering.
-3. **Optimise** locally inside each cluster with SDOA to drive residuals toward zero.
-4. **Select** valid roots by the residual criterion `1 − f(x) < epsilon` and merge duplicates
-   within distance `delta`.
+3. **Optimise** locally inside each cluster with SPO to drive residuals toward zero.
+4. **Select** valid roots by the residual criterion \(1 - F(\mathbf{x}) < \epsilon\) and merge
+   duplicates within distance \(\delta\).
 
 A run is considered successful when the number of recovered roots matches `expected_roots`
 (PySNE's integration tests accept ≥ 80% recovery as a pass while tuning).
