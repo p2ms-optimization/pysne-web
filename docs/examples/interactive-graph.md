@@ -14,26 +14,16 @@ Visualize solution sets of nonlinear systems in 2D. Each marker represents a sol
   </div>
   <div class="graph-controls">
     <label>System
-      <select>
-        <option>Himmelblau-like System</option>
-        <option>Circle-Polynomial System</option>
-        <option>Custom System</option>
+      <select id="system-selector">
+        <option value="1">Problem 1 (2D)</option>
+        <option value="2">Problem 2 (2D)</option>
+        <option value="7">Problem 7 (1D Weierstrass)</option>
       </select>
     </label>
     <label>Max Solutions
-      <input id="max-solutions" type="range" min="2" max="10" value="7">
+      <input id="max-solutions" type="range" min="0" max="16" value="7">
     </label>
-    <label>Tolerance
-      <select id="tolerance">
-        <option>1e-8</option>
-        <option selected>1e-10</option>
-        <option>1e-12</option>
-      </select>
-    </label>
-    <label>
-      <input id="show-basins" type="checkbox" checked> Show basins
-    </label>
-    <button id="randomize-view" class="md-button md-button--primary" type="button">Randomize View</button>
+
   </div>
 </div>
 

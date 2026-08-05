@@ -6,52 +6,75 @@
     if (!svg) return;
 
     const maxSolutions = $('#max-solutions');
-    const tolerance = $('#tolerance');
-    const showBasins = $('#show-basins');
-    const randomize = $('#randomize-view');
+    const systemSelector = $('#system-selector');
     const label = $('#solution-label');
 
-    const baseSolutions = [
-      { x: -2.05, y: 1.55, c: '#ef4444' },
-      { x: -1.55, y: -1.10, c: '#2563eb' },
-      { x: -0.35, y: 0.45, c: '#0284c7' },
-      { x: 0.75, y: 1.60, c: '#16a34a' },
-      { x: 1.85, y: 0.20, c: '#f97316' },
-      { x: 1.35, y: -1.40, c: '#7c3aed' },
-      { x: -1.25, y: 0.85, c: '#0891b2' },
-      { x: 0.00, y: -1.70, c: '#84cc16' },
-      { x: 2.20, y: 1.15, c: '#db2777' },
-      { x: -2.25, y: -0.25, c: '#0ea5e9' }
-    ];
+    let currentData = { roots: [], f1_paths: [], f2_paths: [] };
 
-    function mapX(x) { return 60 + ((x + 3) / 6) * 620; }
-    function mapY(y) { return 420 - ((y + 2.5) / 5) * 360; }
+    // Pan and Zoom State
+    let viewBox = { x: 0, y: 0, w: 740, h: 460 };
+    let isPanning = false;
+    let startPoint = { x: 0, y: 0 };
+
+    function updateViewBox() {
+      svg.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+    }
+
+    svg.addEventListener('mousedown', e => {
+      isPanning = true;
+      startPoint = { x: e.clientX, y: e.clientY };
+    });
+
+    window.addEventListener('mousemove', e => {
+      if (!isPanning) return;
+      const dx = (e.clientX - startPoint.x) * (viewBox.w / svg.clientWidth);
+      const dy = (e.clientY - startPoint.y) * (viewBox.h / svg.clientHeight);
+      viewBox.x -= dx;
+      viewBox.y -= dy;
+      startPoint = { x: e.clientX, y: e.clientY };
+      updateViewBox();
+    });
+
+    window.addEventListener('mouseup', () => { isPanning = false; });
+
+    svg.addEventListener('wheel', e => {
+      e.preventDefault();
+      const zoomIntensity = 0.1;
+      const wheel = e.deltaY < 0 ? 1 : -1;
+      const zoom = Math.exp(wheel * zoomIntensity);
+
+      const rect = svg.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      const svgX = viewBox.x + (mouseX / rect.width) * viewBox.w;
+      const svgY = viewBox.y + (mouseY / rect.height) * viewBox.h;
+
+      viewBox.w /= zoom;
+      viewBox.h /= zoom;
+      viewBox.x = svgX - (mouseX / rect.width) * viewBox.w;
+      viewBox.y = svgY - (mouseY / rect.height) * viewBox.h;
+
+      updateViewBox();
+    }, { passive: false });
+
 
     function render() {
-      const count = Math.max(2, parseInt(maxSolutions ? maxSolutions.value : 7, 10));
-      const tol = tolerance ? tolerance.value : '1e-10';
-      const basins = showBasins ? showBasins.checked : true;
-      const solutions = baseSolutions.slice(0, count);
-      let seedShift = Math.random() * 15;
-
-      const contours = [];
-      for (let i = 0; i < 20; i++) {
-        const y = 80 + i * 16;
-        const amp = 10 + i * 0.6;
-        const d = `M 70 ${y} C 180 ${y - amp}, 230 ${y + amp + seedShift}, 330 ${y} S 500 ${y - amp}, 660 ${y + 5}`;
-        contours.push(`<path d="${d}" fill="none" stroke="#cfe2f3" stroke-width="1" opacity="${0.35 + i * 0.018}"/>`);
+      const count = Math.max(0, parseInt(maxSolutions ? maxSolutions.value : 7, 10));
+      let solutions = currentData.roots ? currentData.roots.slice(0, count) : [];
+      let contoursHTML = "";
+      
+      if (currentData.f1_paths) {
+        contoursHTML += currentData.f1_paths.map(d => `<path d="${d}" fill="none" stroke="#2563eb" stroke-width="1.5" opacity="0.4" />`).join('');
+      }
+      if (currentData.f2_paths) {
+        contoursHTML += currentData.f2_paths.map(d => `<path d="${d}" fill="none" stroke="#ef4444" stroke-width="1.5" opacity="0.4" />`).join('');
       }
 
-      const basinShapes = solutions.map((s, idx) => {
-        const cx = mapX(s.x), cy = mapY(s.y);
-        return `<ellipse cx="${cx}" cy="${cy}" rx="${54 + idx * 2}" ry="${34 + idx}" fill="${s.c}" opacity=".10"/>`;
-      }).join('');
-
       const markers = solutions.map((s, idx) => {
-        const cx = mapX(s.x), cy = mapY(s.y);
         return `<g class="solution-dot" data-index="${idx + 1}" data-x="${s.x}" data-y="${s.y}">
-          <circle cx="${cx}" cy="${cy}" r="9" fill="${s.c}" opacity=".22"/>
-          <circle cx="${cx}" cy="${cy}" r="6" fill="${s.c}" stroke="#fff" stroke-width="2"/>
+          <circle cx="${s.map_x}" cy="${s.map_y}" r="9" fill="${s.c}" opacity=".22"/>
+          <circle cx="${s.map_x}" cy="${s.map_y}" r="6" fill="${s.c}" stroke="#fff" stroke-width="2"/>
         </g>`;
       }).join('');
 
@@ -61,14 +84,9 @@
             <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#d8e7f4" stroke-width="1" opacity=".7"/>
           </pattern>
         </defs>
-        <rect x="0" y="0" width="740" height="460" rx="14" fill="#ffffff"/>
-        <rect x="40" y="40" width="660" height="380" fill="url(#grid)" opacity=".65"/>
-        ${basins ? basinShapes : ''}
-        ${contours.join('')}
-        <line x1="60" y1="240" x2="680" y2="240" stroke="#9cb6ca" stroke-width="1"/>
-        <line x1="370" y1="60" x2="370" y2="420" stroke="#9cb6ca" stroke-width="1"/>
-        <text x="350" y="445" fill="#062b4f" font-size="15">x₁</text>
-        <text x="22" y="240" fill="#062b4f" font-size="15">x₂</text>
+        <rect x="-5000" y="-5000" width="10000" height="10000" fill="#ffffff"/>
+        <rect x="-5000" y="-5000" width="10000" height="10000" fill="url(#grid)" opacity=".65"/>
+        ${contoursHTML}
         ${markers}
       `;
 
@@ -77,17 +95,45 @@
           const index = this.dataset.index;
           const x = Number(this.dataset.x).toFixed(3);
           const y = Number(this.dataset.y).toFixed(3);
-          if (label) label.textContent = `Solution #${index}: x₁=${x}, x₂=${y}, ||F(x)|| < ${tol}`;
+          if (label) label.textContent = `Solution #${index}: x₁=${x}, x₂=${y}`;
         });
       });
     }
 
-    [maxSolutions, tolerance, showBasins].forEach((el) => {
-      if (el) el.addEventListener('input', render);
-      if (el) el.addEventListener('change', render);
-    });
-    if (randomize) randomize.addEventListener('click', render);
-    render();
+    function loadSystem(id) {
+      fetch(`../../assets/data/problem${id}-roots.json`)
+        .then(r => r.json())
+        .then(data => {
+          currentData = data;
+          
+          // Reset viewbox when changing systems
+          viewBox = { x: 0, y: 0, w: 740, h: 460 };
+          updateViewBox();
+
+          // Update slider max to actual number of roots
+          if (maxSolutions && data.roots) {
+            maxSolutions.max = data.roots.length;
+            if (parseInt(maxSolutions.value, 10) > data.roots.length) {
+              maxSolutions.value = data.roots.length;
+            }
+          }
+          
+          render();
+        })
+        .catch(err => console.error("Failed to load real roots:", err));
+    }
+
+    if (maxSolutions) {
+      maxSolutions.addEventListener('input', render);
+      maxSolutions.addEventListener('change', render);
+    }
+
+    if (systemSelector) {
+      systemSelector.addEventListener('change', (e) => loadSystem(e.target.value));
+      loadSystem(systemSelector.value); // initial load
+    } else {
+      loadSystem(1); // fallback
+    }
   }
 
   if (document.readyState === 'loading') {
