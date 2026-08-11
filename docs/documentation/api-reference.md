@@ -1,22 +1,27 @@
 # API Reference
 
-This page documents the core solving API in `pysne`, based on the solver
-implementation (`pysne/solver.py`), the problem-definition base classes
-(`pysne/problems/base.py`), the clustering module
-(`pysne/clustering/modified_clustering_process.py`, `pysne/clustering/model.py`),
-the SPO engine (`pysne/optimizers/spo/engine.py`, `pysne/optimizers/spo/matrix.py`),
-and shared utilities (`pysne/utils.py`). PySNE integrates two stages: an
-iterative **clustering** phase that localizes candidate root/optimum
-regions by migrating a Sobol-sampled population via a spiral
-transformation, followed by **Spiral Dynamics Optimization (SPO)**
-refinement within each cluster — both phases use the same underlying
-rotate-and-shrink spiral update, just at different scales.
+Every `pysne` search tells the same two-part story. First, a swarm of
+Sobol-sampled points spirals inward across the whole domain, clumping
+together wherever it senses a root or optimum nearby — that's the
+**clustering** phase. Then, inside each of those clusters, a second,
+tighter spiral takes over to zero in on the precise point — that's
+**Spiral Optimization (SPO)**. Same rotate-and-shrink move both times,
+just played out at a different scale: wide and exploratory first, then
+narrow and exact.
+
+This page is the reference for that pipeline: the solver that drives it
+(`pysne/solver.py`), the problem classes you plug into it
+(`pysne/problems/base.py`), the clustering step
+(`pysne/clustering/`), the SPO engine itself
+(`pysne/optimizers/spo/`), and the shared utilities
+(`pysne/utils.py`) that tie it all together.
 
 ## `pysne.solve`
 
 ```python
 pysne.solve(problem, params, verbose=False)
 ```
+[:material-code-tags: source](../_modules/pysne/solver.md#__codelineno-0-147)
 
 Public alias for `solve_system`. This is the main entry point for finding
 roots (or optimal points) of a problem.
@@ -24,6 +29,7 @@ roots (or optimal points) of a problem.
 ```python
 pysne.solve_system(problem, params, verbose=False)
 ```
+[:material-code-tags: source](../_modules/pysne/solver.md#__codelineno-0-90)
 
 Solves a system by running the full three-phase pipeline:
 
@@ -94,6 +100,7 @@ problem types that plug into `pysne.solve`. Every problem you define
 subclasses one of these.
 
 ### `BaseProblem` (abstract)
+[:material-code-tags: source](../_modules/pysne/problems/base.md#__codelineno-0-5)
 
 The shared contract every problem type implements.
 
@@ -111,6 +118,7 @@ and derives `self.n_var = len(self.domain)`. `self.equations` defaults to
 `None` and is set by subclasses that use equation systems.
 
 ### `SNEProblem` — Systems of Nonlinear Equations
+[:material-code-tags: source](../_modules/pysne/problems/base.md#__codelineno-0-56)
 
 `problem_type = "SNE"`
 
@@ -127,6 +135,7 @@ For finding roots of a system `F(x) = 0`.
     `1.0` as the residual approaches zero — see [Utility functions](#utility-functions-pysneutils) below.
 
 ### `MultimodalProblem` — general optimization with multiple optima
+[:material-code-tags: source](../_modules/pysne/problems/base.md#__codelineno-0-94)
 
 `problem_type = "Multimodal"`
 
@@ -140,6 +149,7 @@ For finding several local/global optima of `g_func`, not just roots.
     4. Deduplicates the remaining peaks via `filter_unique_roots(..., delta)`.
 
 ### `DiophantineProblem` — integer-constrained problems
+[:material-code-tags: source](../_modules/pysne/problems/base.md#__codelineno-0-148)
 
 `problem_type = "Diophantine"`
 
@@ -153,6 +163,7 @@ For problems where solutions must be integers.
 - `select_final_optimal(candidates)` (alias: `select_final_roots`) — rounds and deduplicates candidates as integer tuples, keeps them if `1.0 - f(x) <= epsilon`, deduplicates via `filter_unique_roots(..., delta)`, and optionally sorts symmetric-solution problems via `sort_unique_roots(..., sort=...)` (controlled by a `sort_solutions` params flag, or auto-enabled for a known set of symmetric benchmark class names).
 
 ### `MinimizedProblem` — minimization wrapper
+[:material-code-tags: source](../_modules/pysne/problems/base.md#__codelineno-0-237)
 
 `problem_type` — inherited from the wrapped problem (defaults to `"Multimodal"`).
 
@@ -202,6 +213,7 @@ These are used internally by `solve_system` and aren't intended to be
 called directly, but are documented here for contributors.
 
 ### `Cluster`
+[:material-code-tags: source](../_modules/pysne/clustering/model.md#__codelineno-0-3)
 
 ```python
 Cluster(center, radius)
@@ -217,6 +229,7 @@ algorithm can search for multiple distinct roots/optima in parallel.
 | `radius` | `float` | Radius of the cluster's region. |
 
 ### `perform_iterative_clustering(problem, params, history=None)`
+[:material-code-tags: source](../_modules/pysne/clustering/modified_clustering_process.md#__codelineno-0-120)
 
 The clustering phase (Phase 1 of `solve_system`). Locates candidate
 root/optimum regions before SPO refines them.
@@ -244,6 +257,7 @@ Pipeline:
 `list[Cluster]` — the distinct clusters found.
 
 ### `process_point_for_clustering(y, clusters, problem, gamma, params, history=None)`
+[:material-code-tags: source](../_modules/pysne/clustering/modified_clustering_process.md#__codelineno-0-8)
 
 Decides how a single point `y` affects the current cluster list, by
 comparing `y` against its nearest existing cluster center `x_C` through
@@ -272,6 +286,7 @@ comparing `y` against its nearest existing cluster center `x_C` through
 `list[Cluster]` — the updated cluster list.
 
 ### `run_spo_on_clusters(clusters, problem, params)`
+[:material-code-tags: source](../_modules/pysne/solver.md#__codelineno-0-10)
 
 Runs SPO on each cluster produced by the clustering phase to refine root
 candidates.
@@ -281,7 +296,7 @@ For every cluster, this function:
 1. Builds a local hypercube domain from the cluster's center and radius, clipped to the global domain.
 2. For `problem_type == "Diophantine"`, enforces a minimum effective radius of `1.0` and re-centers degenerate domains.
 3. Generates `spo_m` initial points inside the local domain via a Sobol sequence (`generate_sobol_points`).
-4. Runs `spiral_dynamics_optimization` on the local domain, maximizing `problem.evaluate_fitness` (SPO here is used as a maximizer, i.e. `minimization=False` — which is also why `MinimizedProblem` exists, to reframe minimization problems as maximization).
+4. Runs `spiral_optimization` on the local domain, maximizing `problem.evaluate_fitness` (SPO here is used as a maximizer, i.e. `minimization=False` — which is also why `MinimizedProblem` exists, to reframe minimization problems as maximization).
 
 **Parameters**
 
@@ -299,10 +314,11 @@ For every cluster, this function:
 
 ## Optimizer engine (SPO)
 
-`pysne.optimizers.spo` — the Spiral Dynamics Optimization Algorithm used
+`pysne.optimizers.spo` — the Spiral Optimization Algorithm used
 to refine candidates within each cluster.
 
-### `spiral_dynamics_optimization(objective_func, domain, params, minimization=False, custom_initial_points=None, equations=None, epsilon=None, return_history=False)`
+### `spiral_optimization(objective_func, domain, params, minimization=False, custom_initial_points=None, equations=None, epsilon=None, return_history=False)`
+[:material-code-tags: source](../_modules/pysne/optimizers/spo/engine.md#__codelineno-0-6)
 
 The core SPO loop. Migrates a population of search points toward the
 current best point each iteration via a spiral (rotate-and-shrink)
@@ -335,6 +351,7 @@ the residual drops below `epsilon`.
 4. For up to `k_max` iterations: moves every point via `new_points = S_n @ points - (S_n - I_n) @ x_star` (vectorized), re-evaluates, and updates `x_star` if a better point is found. Breaks early if solving an SNE and the residual clears `epsilon`.
 
 ### `get_rotation_matrix(n, theta)`
+[:material-code-tags: source](../_modules/pysne/optimizers/spo/matrix.md#__codelineno-0-3)
 
 Builds an `n × n` orthogonal rotation matrix by composing pairwise-plane
 rotations across every unique `(i, j)` pair of dimensions, each by angle
@@ -348,6 +365,23 @@ one dimension).
 
 **Returns** `numpy.ndarray` of shape `(n, n)`.
 
+### `generate_sobol_points(num_points, dimension, domain)`
+[:material-code-tags: source](../_modules/pysne/initialization/sampling.md#__codelineno-0-5)
+
+`pysne.initialization.sampling` — generates a low-discrepancy Sobol
+sequence scaled to `domain`, used to seed both the clustering phase and
+each SPO run with a uniform initial population. Falls back to plain
+pseudo-random uniform sampling if Sobol generation fails (e.g.
+dimensionality limits).
+
+| Name | Type | Description |
+|---|---|---|
+| `num_points` | int | Number of points to generate. Ideally a power of two (`2^m`) for the Sobol sequence's spatial-balance properties. |
+| `dimension` | int | Dimensionality of the sample space. |
+| `domain` | list of tuple | Per-dimension bounds `[(min_1, max_1), ...]`. |
+
+**Returns** `numpy.ndarray` of shape `(num_points, dimension)`.
+
 ---
 
 ## Utility functions (`pysne.utils`)
@@ -355,6 +389,7 @@ one dimension).
 Shared helpers used across the solver, clustering, and problem classes.
 
 ### `objective_function(x, system_of_equations)`
+[:material-code-tags: source](../_modules/pysne/utils.md#__codelineno-0-5)
 
 Converts a system of equations into a maximization-friendly fitness value:
 
@@ -368,11 +403,13 @@ raises a `TypeError`, `ValueError`, or `ZeroDivisionError` (e.g. overflow or
 division by zero in one of the equations).
 
 ### `is_in_domain(point, domain)`
+[:material-code-tags: source](../_modules/pysne/utils.md#__codelineno-0-38)
 
 Returns `True` if `point[i]` falls within `domain[i] = (lo, hi)` for every
 dimension `i` (inclusive bounds), else `False`.
 
 ### `validate_solutions(roots, equations, domain, epsilon)`
+[:material-code-tags: source](../_modules/pysne/utils.md#__codelineno-0-59)
 
 Filters a list of candidate roots, keeping only those that are in-domain
 **and** whose maximum absolute residual across all equations is strictly
@@ -380,6 +417,7 @@ below `epsilon`. Note: unlike `objective_function`'s combined/normalized
 fitness, this checks residuals directly and per-equation (`max`, not `sum`).
 
 ### `create_continuous_bounds(integer_domain, margin=0.5)`
+[:material-code-tags: source](../_modules/pysne/utils.md#__codelineno-0-93)
 
 Used by `DiophantineProblem` to expand each integer-domain dimension by
 `margin` on both sides, giving SPO a continuous space to search that still
@@ -387,6 +425,7 @@ reaches the integer values at the domain's edges. E.g.
 `[(-50, 50)] → [(-50.5, 50.5)]` with the default `margin=0.5`.
 
 ### `filter_unique_roots(candidates, delta)`
+[:material-code-tags: source](../_modules/pysne/utils.md#__codelineno-0-123)
 
 Deduplicates a list of `(point, fitness)` tuples: sorts by fitness
 descending, then greedily keeps points that are further than `delta` from
@@ -396,6 +435,7 @@ it replaces the existing entry. Returns a `numpy.ndarray` of the surviving
 points only (fitness values dropped).
 
 ### `sort_unique_roots(roots, sort=False)`
+[:material-code-tags: source](../_modules/pysne/utils.md#__codelineno-0-211)
 
 Removes duplicate solutions from a list of coordinate tuples. If
 `sort=True`, each solution's coordinates are sorted before comparison, so
@@ -403,6 +443,7 @@ permutations of the same values (e.g. symmetric solutions) are treated as
 duplicates; if `False`, only exact-order duplicates are removed.
 
 ### `calculate_sobol_discrepancy(num_points=None, dimension=None, points=None, domain=None)`
+[:material-code-tags: source](../_modules/pysne/utils.md#__codelineno-0-149)
 
 Diagnostic/QA helper (not part of the solving pipeline) that measures how
 uniformly a set of points covers the search space, via `scipy.stats.qmc.discrepancy`.
@@ -418,8 +459,3 @@ or invalid arguments.
 
 - [Algorithms](algorithms.md) — conceptual overview of the clustering + SPO pipeline.
 - [User Guide](user-guide.md) — practical walkthrough of defining and solving a system.
-
-!!! note "Help complete this page"
-    One piece is still unconfirmed: `generate_sobol_points` (`pysne.initialization.sampling`)
-    — used throughout to generate the initial Sobol-sampled populations for
-    both clustering and SPO, but its source hasn't been shared yet.

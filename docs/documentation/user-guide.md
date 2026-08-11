@@ -78,18 +78,18 @@ move freely between the discrete allowed points.
 | `theta_cl` | Clustering | Spiral rotation angle (default π/4) |
 | `gamma` | Clustering | Fitness cutoff threshold below which points are ignored; interpreted as absolute for SNE/Diophantine problems, relative to the best value found for multimodal problems |
 | `num_check_points` | Clustering | Number of interior points checked between a point and its nearest cluster center (see [Algorithms](algorithms.md)) |
-| `sdoa_m` (or `m`) | Spiral Optimization | Number of points per SDOA run inside each cluster |
-| `sdoa_k_max` (or `k_max`) | Spiral Optimization | Max SDOA iterations |
-| `r` | Spiral Optimization | Spiral contraction rate for SDOA |
-| `theta` | Spiral Optimization | Spiral rotation angle for SDOA |
+| `spo_m` (or `m`) | Spiral Optimization | Number of points per SPO run inside each cluster |
+| `spo_k_max` (or `k_max`) | Spiral Optimization | Max SPO iterations |
+| `r` | Spiral Optimization | Spiral contraction rate for SPO |
+| `theta` | Spiral Optimization | Spiral rotation angle for SPO |
 | `epsilon` | Selection | Residual/accuracy tolerance to accept a candidate |
 | `delta` | Selection | Minimum distance between two candidates to be considered distinct |
 
 !!! tip
     Parameter names differ slightly between the clustering phase
-    (`r_cl`/`theta_cl`) and the SDOA phase (`r`/`theta`) so you can tune them
+    (`r_cl`/`theta_cl`) and the SPO phase (`r`/`theta`) so you can tune them
     independently — see `perform_iterative_clustering` and
-    `run_sdoa_on_clusters` in `pysne/solver.py`.
+    `run_spo_on_clusters` in `pysne/solver.py`.
 
 ## Running the solver
 

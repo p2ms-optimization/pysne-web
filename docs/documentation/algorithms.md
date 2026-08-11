@@ -13,11 +13,11 @@ it converges to a single maximum. Nonlinear systems and multimodal
 functions, however, often have several distinct roots or optima scattered
 across the domain. Running SPO once isn't enough to find them all.
 
-PySNE addresses this with a **two-phase pipeline**: first, an iterative
+PySNE addresses this with a **three-phase pipeline**: first, an iterative
 clustering phase spreads out candidate regions likely to contain distinct
 solutions; then SPO is run independently *within each cluster*, so
 multiple solutions can be refined simultaneously in a single overall call
-to `pysne.solve`.
+to `pysne.solve`; lastly the final selection.
 
 ```text
 Sobol-sample the domain
@@ -79,7 +79,7 @@ relative to what's achievable.
 
 ## Phase 2: Spiral Optimization (SPO) per cluster
 
-Implemented in `run_spo_on_clusters`, calling `spiral_dynamics_optimization`
+Implemented in `run_spo_on_clusters`, calling `spiral_optimization`
 once per cluster found in Phase 1.
 
 For each cluster:
@@ -141,7 +141,7 @@ every key. As a rough guide:
   Journal of Advanced Computational Intelligence and Intelligent
   Informatics, 15, 1116–1122.
 - Sidarto, K.A., Kania, A. (2015). *Finding all solutions of systems of
-  nonlinear equations using spiral dynamics optimization with clustering.*
+  nonlinear equations using spiral optimization with clustering.*
   Journal of Advanced Computational Intelligence and Intelligent
   Informatics, 19(5), 697–707.
 
