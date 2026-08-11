@@ -1,11 +1,11 @@
 # References
 
-This page lists key academic publications and references that form the theoretical foundation of PySNE, including the Spiral Dynamics Optimization Algorithm (SDOA), clustering techniques, and their application to finding multiple roots of nonlinear systems.
+This page lists key academic publications and references that form the theoretical foundation of PySNE, including the Spiral Optimization Algorithm (SPO), clustering techniques, and their application to finding multiple roots of nonlinear systems.
 
 
 ## Primary Algorithm References
 
-### 1. Spiral Dynamics Inspired Optimization (SDOA)
+### 1. Spiral Dynamics Inspired Optimization (SPO)
 The original paper introducing the Spiral Dynamics Inspired Optimization algorithm:
 > **Tamura, K., & Yasuda, K. (2011).** Spiral Dynamics Inspired Optimization. *Journal of Advanced Computational Intelligence and Intelligent Informatics*, 15(8), 1116-1122.
 >
@@ -14,16 +14,16 @@ The original paper introducing the Spiral Dynamics Inspired Optimization algorit
 
 ---
 
-### 2. SDOA with Clustering for Systems of Nonlinear Equations
-The pioneering work that integrated clustering with SDOA to find *all* solutions of a system of nonlinear equations:
+### 2. SPO with Clustering for Systems of Nonlinear Equations
+The pioneering work that integrated clustering with SPO to find *all* solutions of a system of nonlinear equations:
 > **Sidarto, K. A., & Kania, A. (2015).** Finding All Solutions of Systems of Nonlinear Equations Using Spiral Dynamics Inspired Optimization with Clustering. *Journal of Advanced Computational Intelligence and Intelligent Informatics*, 19(5), 697-707.
 >
-> *   **Abstract:** Finding all solutions of systems of nonlinear equations is a challenging task. This paper presents a hybrid method combining the Spiral Dynamics Inspired Optimization (SDOA) algorithm with a clustering technique to find all real solutions in a bounded domain.
+> *   **Abstract:** Finding all solutions of systems of nonlinear equations is a challenging task. This paper presents a hybrid method combining the Spiral Dynamics Inspired Optimization (SPO) algorithm with a clustering technique to find all real solutions in a bounded domain.
 > *   **Links:** [DOI: 10.20965/jaciii.2015.p0697](https://doi.org/10.20965/jaciii.2015.p0697)
 
 ---
 
-### 3. SDOA with Clustering for Multimodal Optimization
+### 3. SPO with Clustering for Multimodal Optimization
 Further extension of the methodology to find multiple local and global minima:
 > **Sidarto, K. A., Kania, A., & Sumarti, N. (2017).** Finding Multiple Solutions of Multimodal Optimization Using Spiral Optimization Algorithm with Clustering. *MENDEL*, 23(1), 97-104.
 >
