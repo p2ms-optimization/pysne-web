@@ -76,16 +76,18 @@ from pysne.problems.base import MultimodalProblem
 from pysne.visualization import plot_2d_multimodal_results
 
 class MyCustomMultimodal(MultimodalProblem):
-    def __init__(self):
-        super().__init__(name="My Custom Landscape", n_var=2, optima_type="both")
+    @property
+    def name(self):
+        return "My Custom Landscape"
     
     def get_info(self):
         domain = [(-3.0, 3.0), (-3.0, 3.0)]
         return domain, {}
 
     def g_func(self, X):
-        X = np.atleast_2d(X)
-        x1, x2 = X[:, 0], X[:, 1]
+        X = np.asarray(X)
+        x1 = X[0] if X.ndim == 1 else X[:, 0]
+        x2 = X[1] if X.ndim == 1 else X[:, 1]
         return np.sin(x1) * np.cos(x2)
 
 # Instantiate problem and define discovered optima points
@@ -107,10 +109,12 @@ from pysne.problems.base import SNEProblem
 from pysne.visualization import plot_2d_sne_results
 
 class MySNESystem(SNEProblem):
-    def __init__(self):
-        super().__init__(name="Circle & Line System", n_var=2)
-        # Define equations f1(x) = 0 and f2(x) = 0
-        self.equations = [
+    @property
+    def name(self):
+        return "Circle & Line System"
+
+    def get_equations(self):
+        return [
             lambda x: x[0]**2 + x[1]**2 - 4,  # Circle of radius 2
             lambda x: x[0] - x[1]             # Line x1 = x2
         ]
@@ -129,6 +133,18 @@ roots = np.array([
 # Render zero-contour plot with overlaid roots
 plot_2d_sne_results(prob, roots, save_path="custom_sne_results.png")
 ```
+
+### Python API Parameter Reference
+
+All visualization functions (`plot_1d_sne_results`, `plot_2d_sne_results`, `plot_2d_multimodal_results`, etc.) accept the following optional output parameters:
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `save_path` | `str` / `None` | `None` | Target filepath to save the output image (e.g., `"output.png"` or `"./plots/my_plot.png"`). If `None`, the image is not saved to disk automatically. |
+| `no_show` | `bool` | `False` | Set to `True` to suppress `plt.show()` pop-up windows. Useful for automated scripts or headless environments. |
+
+!!! tip "Displaying in Jupyter Notebooks"
+    When `save_path=None` in a Jupyter Notebook, plots automatically render inline. The visualization functions also return the Matplotlib `Figure` object, allowing further customization via `fig.savefig("high_res.png", dpi=600)`.
 
 ---
 
