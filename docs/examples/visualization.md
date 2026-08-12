@@ -1,117 +1,136 @@
-# Visualization
+# Visualization & Landscape Analysis
 
-Many problems do not have just one solution waiting to be found. A multimodal
-landscape can contain several local and global optima, while a system of
-nonlinear equations can have multiple distinct roots within the same bounded
-domain. `pysne` is built for this setting: rather than stopping after one
-solution, it searches for **all possible roots or optimum points**, using
-clustering to identify promising regions and spiral optimization to explore
-them simultaneously.
+Visualization is an essential tool in optimization and system solving. It translates abstract mathematical landscapes—such as multimodal objective spaces with multiple local/global optima or non-linear equation systems with multiple roots—into intuitive visual representations.
 
-Visualization makes that search easier to understand. The examples on this
-page use [matplotlib](https://matplotlib.org) directly to reveal the landscape
-first, then—when the solver is involved—place the solutions found by `pysne`
-back onto that landscape. The result is a visual connection between the
-problem being searched and the roots or optima the algorithm discovers.
+`pysne` provides visualization tools built directly on top of [matplotlib](https://matplotlib.org). You can run these tools as ready-to-use Command Line Interface (CLI) scripts or import their visualization functions into your own Python scripts.
 
-## Multimodal landscapes
+---
 
-The visualization adapts to the dimensionality of the problem domain. For two-dimensional problems, the objective landscape is evaluated on a `200×200` grid and rendered as a 3D surface colored by fitness, making its peaks, valleys, and other features visible before the search begins. Higher-dimensional problems use alternative representations suited to spaces that cannot be shown directly as a surface.
+## Overview of Visualization Tools
 
-### Example: four multimodal benchmark landscapes
+| Visualization Mode | Target Problem | Dimensionality | Description |
+| :--- | :--- | :--- | :--- |
+| **SNE Equation Contours** | `SNEProblem` | 1D & 2D | Plots zero-level equation contours ($f_i(\mathbf{x}) = 0$) and overlays solver-discovered roots at contour intersections. |
+| **SNE Fitness Scatter** | `SNEProblem` | 3D | 3D scatter plot thresholded at top fitness regions with 3D root markers. |
+| **Multimodal Surface & Heatmap** | `MultimodalProblem` | 2D | Side-by-side 3D Surface landscape and 2D Contour Heatmap with overlaid maxima and minima. |
+| **Multimodal 3D & Cross-Sections** | `MultimodalProblem` | 3D | 3D thresholded scatter plot accompanied by 2D cross-sectional slice heatmaps. |
 
-These are plots rendered by the script for four of the built-in
-problems in `pysne.problems.benchmarks_multimodal`.
+---
 
-**Problem 1: 2D Second Minima Function**
-<br>Two shallow global-ish basins with several local minima nearby — a good stress test for finding *all* optima, not just the best one.
+## Quick Start Tutorial (CLI Usage)
 
-![Problem 1: 2D Second Minima Function surface plot](../assets/images/visualization/problem_1_results_viz.png)
+Like `pymoo`, `pysne` visualizers act as convenient wrappers around `matplotlib`. You can execute them directly from your terminal.
 
-**Problem 2: Six-Hump Camel Back**
-<br>A classic multimodal benchmark with six local minima, two of which are global.
+### 1. Visualizing SNE Systems & Discovered Roots
 
-![Problem 2: Six Hump Camel Back Function surface plot](../assets/images/visualization/problem_2_results_viz.png)
-
-**Problem 3: 2D Rastrigin Function**
-<br>A dense, regular grid of local minima around a single global minimum — highlights why clustering matters before spiral refinement.
-
-![Problem 3: 2D Rastrigin Function surface plot](../assets/images/visualization/problem_3_results_viz.png)
-
-**Problem 4: 2D Vincent Function**
-<br>A rippled surface of evenly spaced peaks and valleys on a log scale — every peak is a global optimum, making it a clean test of whether the solver finds all of them rather than converging to just one.
-
-![Problem 4: 2D Vincent Function surface plot](../assets/images/visualization/problem_4_results_viz.png)
-
-**Problem 5: 2D Shubert Function**
-<br>A jagged field of 18 global minima surrounded by many local ones — one of the more demanding multimodal benchmarks for exhaustive optima-finding.
-
-![Problem 5: 2D Shubert Function surface plot](../assets/images/visualization/problem_5_results_viz.png)
-
-### Adapting it to your own problem
-
-The script only touches the public `MultimodalProblem` interface
-(`domain` and `g_func`), so it works unmodified on any custom problem —
-swap in your own `get_multimodal_problems()`-style dict, or just call
-`plot_function` directly:
-
-```python
-from visualize_multimodal import plot_function
-from my_problems import MyLandscape
-
-plot_function(prob_id=0, problem_func=MyLandscape, save_dir=None)
-```
-
-[:material-github: View full source on GitHub](https://github.com/p2ms-optimization/pysne/blob/main/examples/visualize_multimodal.py){ .md-button }
-
-## SNE landscapes + solved roots
-
-[`examples/visualize_sne_results.py`](https://github.com/p2ms-optimization/pysne/blob/main/examples/visualize_sne_results.py)
-goes a step further than the multimodal script: it actually **runs the
-solver** (`solve_system` from `pysne.solver`) on a chosen `SNEProblem`,
-then plots the landscape *with the discovered roots overlaid on top* —
-so you can see at a glance whether what `pysne` found lines up with the
-actual solution set.
-
-Like the multimodal script, it picks a rendering strategy based on
-`problem.n_var` — 1D plots the equation curve with each root marked where
-it crosses zero, and 2D draws the zero-level contour of each equation in
-the system, overlaying the solver's roots wherever those contours
-actually intersect.
-
-It's a CLI tool, run as:
+Run `visualize_sne_results.py` to solve an SNE benchmark problem and plot its zero-level equation contours overlaid with roots:
 
 ```bash
-python visualize_sne_results.py --problem 7 --save_dir ./plots --no_show
+python examples/visualize_sne_results.py --problem 1 --save_dir ./plots --no_show
 ```
 
-`--problem` accepts any key from `get_problem_set()` in
-`pysne.problems.benchmarks_sne` (currently `1`–`7`); `--no_show` saves the
-figure without opening an interactive window, which is what was used to
-generate the screenshots below.
+**Output Plot:**
+![SNE Problem 1 2D Contour Plot](../assets/images/visualization/sne-2d-problem1-results.png)
 
-### Example: solved roots on three SNE benchmarks
+```bash
+python examples/visualize_sne_results.py --problem 2 --save_dir ./plots --no_show
+```
 
-These are real runs — the solver actually executed and its output is what's plotted.
+**Output Plot:**
+![SNE Problem 2 2D Contour Plot](../assets/images/visualization/problem_2_benchmark_system_non-linear_equation_results.png)
 
-**Problem 1 (2D)**
-<br>The red and blue curves are the two equations' zero-level contours — every point they cross is a true root of the system. The solver found 6 roots, matching the visible intersections.
+---
 
-![Problem 1 2D contour plot with solved roots marked](../assets/images/visualization/sne-2d-problem1-results.png)
+### 2. Visualizing Multimodal Landscapes & Optima
 
-**Problem 2 (2D)**
-<br>A denser system than Problem 1 — the two contours weave across each other 12 times, and `solve_system` recovered all 12 intersections.
+Run `visualize_multimodal_results.py` to inspect multimodal landscapes and overlay discovered maxima and minima:
 
-![Problem 2 2D contour plot with solved roots marked](../assets/images/visualization/problem_2_benchmark_system_non-linear_equation_results.png)
+```bash
+python examples/visualize_multimodal_results.py --problem 2 --save_dir ./plots --no_show
+```
 
-**Problem 7 (1D, Weierstrass-based)**
-<br>`solve_system` found all 9 roots (fitness 1.000000 on each); every zero-crossing of the curve has a marker on it.
+**Output Plot:**
+![Six Hump Camel Back Surface & Contour Plot](../assets/images/visualization/problem_2_results_viz.png)
 
-![Problem 7 1D equation curve with solved roots marked](../assets/images/visualization/hasil_weistrass.png)
+---
 
-[:material-github: View full source on GitHub](https://github.com/p2ms-optimization/pysne/blob/main/examples/visualize_sne_results.py){ .md-button }
+## Command Line Arguments Reference
 
-!!! note
-    This script isn't in the `pysne` repository yet — add it to `examples/`
-    alongside `visualize_multimodal.py` for the GitHub source link above
-    to resolve.
+| Argument | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `--problem` | `str` / `int` | `1` (SNE) / `2` (Multimodal) | Problem key/ID from benchmark problem sets (`benchmarks_sne` or `benchmarks_multimodal`). |
+| `--save_dir` | `str` | `.` | Directory path where output PNG images will be saved. |
+| `--no_show` | `flag` | `False` | When set, saves figures directly to disk without displaying interactive pop-up windows. |
+
+---
+
+## Custom Problem Tutorial (Python API)
+
+You can import `pysne` visualization functions into your custom Python workflows just like in `pymoo`.
+
+### Example 1: Custom Multimodal Landscape
+
+```python
+import numpy as np
+from pysne.problems.base import MultimodalProblem
+from examples.visualize_multimodal_results import plot_2d_results
+
+class MyCustomMultimodal(MultimodalProblem):
+    def __init__(self):
+        super().__init__(name="My Custom Landscape", n_var=2, optima_type="both")
+    
+    def get_info(self):
+        domain = [(-3.0, 3.0), (-3.0, 3.0)]
+        return domain, {}
+
+    def g_func(self, X):
+        X = np.atleast_2d(X)
+        x1, x2 = X[:, 0], X[:, 1]
+        return np.sin(x1) * np.cos(x2)
+
+# Instantiate problem and define discovered optima points
+prob = MyCustomMultimodal()
+maxima = np.array([[np.pi/2, 0.0]])
+minima = np.array([[-np.pi/2, 0.0]])
+
+# Render 3D Surface + 2D Contour plot
+plot_2d_results(prob, maxima, minima, save_path="custom_multimodal_results.png")
+```
+
+---
+
+### Example 2: Custom Non-linear System of Equations (SNE)
+
+```python
+import numpy as np
+from pysne.problems.base import SNEProblem
+from examples.visualize_sne_results import plot_2d_results
+
+class MySNESystem(SNEProblem):
+    def __init__(self):
+        super().__init__(name="Circle & Line System", n_var=2)
+        # Define equations f1(x) = 0 and f2(x) = 0
+        self.equations = [
+            lambda x: x[0]**2 + x[1]**2 - 4,  # Circle of radius 2
+            lambda x: x[0] - x[1]             # Line x1 = x2
+        ]
+        
+    def get_info(self):
+        domain = [(-3.0, 3.0), (-3.0, 3.0)]
+        return domain, {}
+
+# Instantiate problem and roots found by solver
+prob = MySNESystem()
+roots = np.array([
+    [np.sqrt(2), np.sqrt(2)],
+    [-np.sqrt(2), -np.sqrt(2)]
+])
+
+# Render zero-contour plot with overlaid roots
+plot_2d_results(prob, roots, save_path="custom_sne_results.png")
+```
+
+---
+
+[:material-github: View Source code for SNE Visualizer on GitHub](https://github.com/p2ms-optimization/pysne/blob/main/examples/visualize_sne_results.py){ .md-button }
+[:material-github: View Source code for Multimodal Visualizer on GitHub](https://github.com/p2ms-optimization/pysne/blob/main/examples/visualize_multimodal_results.py){ .md-button }
