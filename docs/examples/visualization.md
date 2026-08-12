@@ -2,7 +2,7 @@
 
 Visualization is an essential tool in optimization and system solving. It translates abstract mathematical landscapes—such as multimodal objective spaces with multiple local/global optima or non-linear equation systems with multiple roots—into intuitive visual representations.
 
-`pysne` provides visualization tools built directly on top of [matplotlib](https://matplotlib.org). You can run these tools as ready-to-use Command Line Interface (CLI) scripts or import their visualization functions into your own Python scripts.
+`pysne` provides visualization tools built directly on top of [matplotlib](https://matplotlib.org). You can run these tools as ready-to-use Command Line Interface (CLI) scripts or import their visualization functions directly into your own Python scripts via `pysne.visualization`.
 
 ---
 
@@ -19,7 +19,7 @@ Visualization is an essential tool in optimization and system solving. It transl
 
 ## Quick Start Tutorial (CLI Usage)
 
-Like `pymoo`, `pysne` visualizers act as convenient wrappers around `matplotlib`. You can execute them directly from your terminal.
+`pysne` visualizers act as convenient wrappers around `matplotlib`. You can execute them directly from your terminal.
 
 ### 1. Visualizing SNE Systems & Discovered Roots
 
@@ -66,14 +66,14 @@ python examples/visualize_multimodal_results.py --problem 2 --save_dir ./plots -
 
 ## Custom Problem Tutorial (Python API)
 
-You can import `pysne` visualization functions into your custom Python workflows just like in `pymoo`.
+You can import `pysne` visualization functions into any custom Python workflow directly from `pysne.visualization`:
 
 ### Example 1: Custom Multimodal Landscape
 
 ```python
 import numpy as np
 from pysne.problems.base import MultimodalProblem
-from examples.visualize_multimodal_results import plot_2d_results
+from pysne.visualization import plot_2d_multimodal_results
 
 class MyCustomMultimodal(MultimodalProblem):
     def __init__(self):
@@ -94,7 +94,7 @@ maxima = np.array([[np.pi/2, 0.0]])
 minima = np.array([[-np.pi/2, 0.0]])
 
 # Render 3D Surface + 2D Contour plot
-plot_2d_results(prob, maxima, minima, save_path="custom_multimodal_results.png")
+plot_2d_multimodal_results(prob, maxima, minima, save_path="custom_multimodal_results.png")
 ```
 
 ---
@@ -104,7 +104,7 @@ plot_2d_results(prob, maxima, minima, save_path="custom_multimodal_results.png")
 ```python
 import numpy as np
 from pysne.problems.base import SNEProblem
-from examples.visualize_sne_results import plot_2d_results
+from pysne.visualization import plot_2d_sne_results
 
 class MySNESystem(SNEProblem):
     def __init__(self):
@@ -127,7 +127,7 @@ roots = np.array([
 ])
 
 # Render zero-contour plot with overlaid roots
-plot_2d_results(prob, roots, save_path="custom_sne_results.png")
+plot_2d_sne_results(prob, roots, save_path="custom_sne_results.png")
 ```
 
 ---
