@@ -3,22 +3,30 @@
 This example solves a nonlinear system in two variables.
 
 ```python
-import pysne as ps
+from pysne.problems.base import SNEProblem
+from pysne.solver import solve
 
-system = ps.System([
-    lambda x: x[0]**2 + x[1]**2 - 1,
-    lambda x: x[0] - x[1]**2
-])
+class MySystem(SNEProblem):
+    @property
+    def name(self):
+        return "Circle and parabola"
 
-solutions = ps.solve_all(
-    system,
-    bounds=[(-2, 2), (-2, 2)],
-    tolerance=1e-10,
-    max_solutions=20,
-)
+    def get_equations(self):
+        return [
+            lambda x: x[0]**2 + x[1]**2 - 1,
+            lambda x: x[0] - x[1]**2,
+        ]
 
-for solution in solutions:
-    print(solution)
+    def get_info(self):
+        domain = [(-2, 2), (-2, 2)]
+        params = {"m_cluster": 250, "k_cluster": 10, "epsilon": 1e-7, "delta": 0.01}
+        return domain, params
+
+problem = MySystem()
+domain, params = problem.get_info()
+result = solve(problem, params, verbose=True)
+
+for root in result["roots"]:
+    print(root)
 ```
-
-Next, open the [Interactive Graph Demo](../examples/interactive-graph.md) to explore a visual example.
+

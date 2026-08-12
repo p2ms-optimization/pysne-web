@@ -16,7 +16,13 @@ pip install -e .
 
 ## Requirements
 
-- Python 3.10 or newer
+- Python 3.8 or newer
 - NumPy
 - SciPy
-- Matplotlib or Plotly for visualization
+
+Plotting (see [Visualization](../examples/visualization.md)) needs
+matplotlib, which is an optional extra rather than a core dependency:
+
+```bash
+pip install pysne[plot]
+```

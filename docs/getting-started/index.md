@@ -12,16 +12,28 @@ PySNE is designed to help researchers, students, and developers solve systems of
 ## Basic workflow
 
 ```python
-import pysne as ps
+import numpy as np
+from pysne.problems.base import SNEProblem
+from pysne.solver import solve
 
-system = ps.System([
-    "x**2 + y**2 - 1",
-    "x - exp(-y)"
-])
+class MySystem(SNEProblem):
+    @property
+    def name(self):
+        return "My system"
 
-solutions = ps.solve_all(system, bounds=[(-2, 2), (-2, 2)])
-print(solutions)
+    def get_equations(self):
+        return [
+            lambda x: x[0]**2 + x[1]**2 - 1,
+            lambda x: x[0] - np.exp(-x[1]),
+        ]
+
+    def get_info(self):
+        domain = [(-2, 2), (-2, 2)]
+        params = {"m_cluster": 250, "k_cluster": 10, "epsilon": 1e-7, "delta": 0.01}
+        return domain, params
+
+problem = MySystem()
+domain, params = problem.get_info()
+result = solve(problem, params)
+print(result["roots"])
 ```
-
-!!! note
-    This is starter documentation content. Replace the API examples with your real PySNE implementation when the package is ready.
