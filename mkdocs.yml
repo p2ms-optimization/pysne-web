@@ -18,7 +18,7 @@ nav:
       - Algorithms: documentation/algorithms.md
   - Examples:
       - Example Gallery: examples/index.md
-      - Interactive Graph Demo: examples/interactive-graph.md
+      - Visualization: examples/visualization.md
       - Image & Video Demos: examples/image-video-demo.md
   - Case Studies:
       - Overview: case-studies/index.md
@@ -53,9 +53,11 @@ theme:
   features:
     - navigation.tabs
     - navigation.sections
+    - navigation.indexes
     - navigation.expand
     - navigation.top
     - navigation.footer
+    - navigation.tracking
     - search.suggest
     - search.highlight
     - content.code.copy
@@ -92,7 +94,6 @@ extra_css:
   - assets/stylesheets/extra.css
 
 extra_javascript:
-  - assets/javascripts/interactive-demo.js
   - assets/javascripts/mathjax.js
   - https://cdn.jsdelivr.net/npm/@mathjax/mathjax-newcm-font/tex-mml-chtml-mathjax-newcm.js
 
