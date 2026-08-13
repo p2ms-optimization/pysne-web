@@ -408,14 +408,6 @@ division by zero in one of the equations).
 Returns `True` if `point[i]` falls within `domain[i] = (lo, hi)` for every
 dimension `i` (inclusive bounds), else `False`.
 
-### `validate_solutions(roots, equations, domain, epsilon)`
-[:material-code-tags: source](../_modules/pysne/utils.md#__codelineno-0-59)
-
-Filters a list of candidate roots, keeping only those that are in-domain
-**and** whose maximum absolute residual across all equations is strictly
-below `epsilon`. Note: unlike `objective_function`'s combined/normalized
-fitness, this checks residuals directly and per-equation (`max`, not `sum`).
-
 ### `create_continuous_bounds(integer_domain, margin=0.5)`
 [:material-code-tags: source](../_modules/pysne/utils.md#__codelineno-0-93)
 
