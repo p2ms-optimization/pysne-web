@@ -20,10 +20,14 @@ nav:
       - Example Gallery: examples/index.md
       - Visualization: examples/visualization.md
       - Image & Video Demos: examples/image-video-demo.md
+      - PySNE Tutorial Series: examples/pysne-tutorial-series.md
+      - PySNE Tutorial Series 2nd Version: examples/pysne-tutorial-series-2.md
   - Case Studies:
       - Overview: case-studies/index.md
-      - Nonlinear Systems: case-studies/nonlinear-systems.md
       - Application Examples: case-studies/application-examples.md
+      - Nonlinear Systems: case-studies/nonlinear-systems.md
+      - Diophantine Equations: case-studies/diophantine-equations.md
+      - Multimodal Functions: case-studies/multimodal-benchmarks.md
   - Research:
       - Overview: research/index.md
       - Publications: research/publications.md
