@@ -1,15 +1,14 @@
 # Documentation Overview
 
-PySNE documentation is organized around four key areas:
+The PySNE documentation is organized into three main sections:
 
-1. Defining nonlinear systems.
-2. Searching for all solutions.
-3. Validating convergence and residuals.
-4. Visualizing the solution landscape.
+- **[Algorithms](algorithms.md)**: A conceptual overview of PySNE's three-phase pipeline (Iterative Clustering, Spiral Optimization, and Final Selection) and how it addresses different problem types.
+- **[User Guide](user-guide.md)**: A practical walkthrough for defining and solving problems, including systems of equations, multimodal optimization, and Diophantine (integer-constrained) problems.
+- **[API Reference](api-reference.md)**: Full function-level documentation of the solver, problem classes, hyperparameters, and internal components.
 
 ## Main concepts
 
-- **System**: a set of nonlinear equations.
-- **Variable bounds**: search space for candidate solutions.
-- **Residual**: value of `||F(x)||`, used to validate whether a point is a solution.
-- **Basin of attraction**: region of initial points that converge to the same solution.
+- **Spiral Optimization (SPO)**: A local search technique that migrates a population of points toward a best point through a rotate-and-shrink transformation.
+- **Iterative Clustering**: A technique to scatter and group candidate solutions, allowing the solver to locate *all* solutions simultaneously across the domain.
+- **Problem Types**: PySNE natively handles systems of nonlinear equations (`SNEProblem`), general continuous optimization (`MultimodalProblem`), and integer-constrained optimization (`DiophantineProblem`).
+- **Domain & Hyperparameters**: Problems are defined with continuous or integer bounds and tuned using a dictionary of parameters (e.g., `m_cluster`, `gamma`, `epsilon`, `delta`).
