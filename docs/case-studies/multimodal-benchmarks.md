@@ -70,7 +70,6 @@ The registry exposes both numeric IDs and convenient string keys.
 | `7` | Shubert | 3 | \([-10, 10]^3\) | max |
 | `schwefel` | Schwefel 2.22 | 3 | \([-4, 6]^3\) | both |
 | `griewank` | Griewank | 2 | \([-600, 600]^2\) | both |
-| `iwm` | IWM project (applied) | 25 | task-specific bounds | both |
 
 ---
 
@@ -157,12 +156,6 @@ g(\mathbf{x}) = \sum_{i} \frac{x_i^2}{4000} - \prod_{i} \cos\left(\frac{x_i}{\sq
 
 - **Search space:** \(x_1, x_2 \in [-600, 600]\)
 - **optima_type:** both
-
-## IWM (applied problem)
-
-An applied 25-dimensional case in which each variable is a task duration bounded by
-project-specific limits, showing how the same multimodal machinery extends to real planning
-problems. Retrieve it with the `"iwm"` key.
 
 ---
 
