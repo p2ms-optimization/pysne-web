@@ -14,7 +14,16 @@ You can link an image from a public URL, or place your image inside `docs/assets
 ## YouTube Video Example
 
 <div class="video-frame">
-  <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="PySNE video demo" allowfullscreen></iframe>
+  <iframe
+    width="560"
+    height="315"
+    src="https://www.youtube.com/embed/HotWbPHfODU?si=QsyMXN50MCjYegb9"
+    title="YouTube video player"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen>
+  </iframe>
 </div>
 
 You can replace the video ID with your real PySNE tutorial or research presentation video.
