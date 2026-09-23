@@ -234,21 +234,21 @@
   .graph-stage svg { min-height: 300px; }
 }
 
-/* Atur ukuran ikon kecil di kiri */
+/* Adjust the size of the small icon on the left */
 .md-header__button.md-logo img,
 .md-header__button.md-logo svg {
   height: 1.8rem;
   width: auto;
 }
 
-/* Sembunyikan teks "PySNE" bawaan placeholder */
+/* Hide the default placeholder "PySNE" text */
 .md-header__title .md-header__ellipsis {
   font-size: 0;
   color: transparent;
   white-space: nowrap;
 }
 
-/* Masukkan logo teks horizontal sebagai pengganti teks di header */
+/* Insert the text logo as a replacement in the header */
 .md-header__title .md-header__ellipsis::after {
   content: "";
   display: inline-block;
