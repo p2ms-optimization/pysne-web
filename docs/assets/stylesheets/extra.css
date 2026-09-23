@@ -233,3 +233,31 @@
   .pysne-title { font-size: 3.4rem !important; }
   .graph-stage svg { min-height: 300px; }
 }
+
+/* Atur ukuran ikon kecil di kiri */
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 1.8rem;
+  width: auto;
+}
+
+/* Sembunyikan teks "PySNE" bawaan placeholder */
+.md-header__title .md-header__ellipsis {
+  font-size: 0;
+  color: transparent;
+  white-space: nowrap;
+}
+
+/* Masukkan logo teks horizontal sebagai pengganti teks di header */
+.md-header__title .md-header__ellipsis::after {
+  content: "";
+  display: inline-block;
+  /* Sesuaikan path jika direktori asset kamu berbeda */
+  background-image: url('../images/PySNE Logo - Pisah icon-10.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left center;
+  width: 140px; /* Atur lebar logo teks sesuai selera */
+  height: 2.0rem; /* Tinggi menyesuaikan header */
+  vertical-align: middle;
+}

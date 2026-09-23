@@ -6,7 +6,10 @@ hide:
 <div class="pysne-hero">
   <div>
     <span class="pysne-eyebrow">Open Source</span>
-    <h1 class="pysne-title">PySNE</h1>
+    <!-- <h1 class="pysne-title">PySNE</h1> -->
+    <div class="hero-brand">
+      <img src="assets/images/PySNE Logo Rectangle-01.png" alt="PySNE logo" width="140" style="margin-bottom: 1rem;">
+    </div>
     <div class="pysne-subtitle">Finding All Solutions of System of Nonlinear Equations</div>
     <p class="pysne-desc">
       PySNE is an open-source Python project for solving systems of nonlinear equations. It provides powerful algorithms, interactive visualization, and reproducible examples for research and education.

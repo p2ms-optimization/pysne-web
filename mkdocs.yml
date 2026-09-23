@@ -39,8 +39,8 @@ nav:
 
 theme:
   name: material
-  logo: assets/images/pysne-logo.svg
-  favicon: assets/images/pysne-logo.svg
+  logo: assets/images/pysne-logo-icon.png
+  favicon: assets/images/pysne-logo-icon.png
   palette:
     - scheme: default
       primary: custom
