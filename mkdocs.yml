@@ -19,9 +19,7 @@ nav:
   - Examples:
       - Example Gallery: examples/index.md
       - Visualization: examples/visualization.md
-      - Image & Video Demos: examples/image-video-demo.md
       - PySNE Tutorial Series: examples/pysne-tutorial-series.md
-      - PySNE Tutorial Series 2nd Version: examples/pysne-tutorial-series-2.md
   - Case Studies:
       - Overview: case-studies/index.md
       - Application Examples: case-studies/application-examples.md

@@ -1,6 +1,6 @@
 # Installation
 
-Install PySNE from PyPI when available:
+Install PySNE from PyPI:
 
 ```bash
 pip install pysne
