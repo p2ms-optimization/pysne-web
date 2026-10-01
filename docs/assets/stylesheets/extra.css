@@ -92,11 +92,21 @@
 
 .pysne-subtitle {
   max-width: 640px;
-  font-size: clamp(1.45rem, 3vw, 2.05rem);
-  line-height: 1.15;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.1;
   font-weight: 800;
   color: var(--pysne-navy);
-  margin: 0 0 1rem;
+  margin: 0 0 .4rem;
+}
+
+.pysne-sub-subtitle {
+  max-width: 640px;
+  font-size: clamp(.95rem, 1.8vw, 1.15rem);
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--pysne-muted);
+  letter-spacing: .04em;
+  margin: 0 0 .8rem;
 }
 
 .pysne-desc {
@@ -114,17 +124,19 @@
 }
 
 .pysne-visual-card {
-  border: 1px solid var(--pysne-border);
+  border: 1px solid rgba(139,92,246,.3);
   border-radius: 22px;
-  background: linear-gradient(180deg, #ffffff, #f7fbff);
-  box-shadow: 0 22px 55px rgba(6,43,79,.1);
-  padding: 1rem;
+  background: linear-gradient(135deg, #0d0628, #1a0a3e);
+  box-shadow: 0 22px 55px rgba(13,6,40,.45), 0 0 40px rgba(139,92,246,.08);
+  padding: .5rem;
+  overflow: hidden;
 }
 
 .pysne-surface-svg {
   width: 100%;
   height: auto;
   display: block;
+  border-radius: 18px;
 }
 
 .pysne-card-grid,
@@ -156,6 +168,9 @@
 }
 
 .pysne-card { padding: 1.25rem; min-height: 150px; }
+.pysne-card--link { display: block; text-decoration: none; color: inherit; cursor: pointer; }
+.pysne-card--link:hover { text-decoration: none; }
+.pysne-card--link h3 { color: var(--pysne-navy); }
 .pysne-mini-card { padding: 1rem 1.1rem; display: flex; align-items: center; gap: .9rem; }
 .pysne-demo-card { overflow: hidden; }
 .pysne-demo-card-content { padding: 1rem 1.15rem 1.15rem; }
@@ -171,7 +186,14 @@
   color: var(--pysne-blue);
   font-size: 1.3rem;
   font-weight: 900;
+  flex-shrink: 0;
 }
+
+/* Color-coded capability card icons */
+.pysne-icon--root { background: #e0f2fe; color: #0284c7; }
+.pysne-icon--int  { background: #dcfce7; color: #16a34a; }
+.pysne-icon--opt  { background: #fff7ed; color: #ea580c; }
+.pysne-icon--viz  { background: #ede9fe; color: #7c3aed; }
 
 .pysne-card h3,
 .pysne-mini-card h3,
@@ -195,7 +217,7 @@
 
 .pysne-thumb {
   width: 100%;
-  height: 165px;
+  height: 220px;
   background: var(--pysne-soft);
   border-bottom: 1px solid var(--pysne-border);
 }
